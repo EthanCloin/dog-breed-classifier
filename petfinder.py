@@ -16,7 +16,9 @@ def main():
     SECRET = os.getenv("PETFINDER_SECRET")
 
     # get_petfinder_auth(API_KEY, SECRET)
-    get_dogs()
+    # get_dogs()
+    for page in range(62, 101):
+        get_dogs(page=page)
 
 
 def get_petfinder_auth(api_key, secret):
@@ -39,14 +41,14 @@ def get_petfinder_auth(api_key, secret):
         response.raise_for_status()
 
 
-def get_dogs(is_retry=False):
+def get_dogs(is_retry=False, page=1):
     params = {
         "type": "Dog",
         "status": "adoptable,adopted,found",
         "location": "Jacksonville, FL",
         "distance": 500,
         "sort": "distance",
-        "page": 1,
+        "page": page,
         "limit": 100,
     }
     url = "https://api.petfinder.com/v2/animals"
