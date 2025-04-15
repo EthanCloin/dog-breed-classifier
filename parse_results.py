@@ -1,4 +1,4 @@
-import os
+import csv
 from pathlib import Path
 import httpx
 import json
@@ -32,7 +32,7 @@ def save_image(download_url, save_path):
 def parse_attributes_from_json(filename=""):
     """get images, descriptions (labels) and other attributes"""
 
-    filename = Path() / "data" / "Dog_Jacksonville-FL_1-100.json"
+    filename = Path() / "data" / "mytest.json"
     # map attribute name to function which grabs data
     attributes = {
         "id": lambda x: x.get("id"),
@@ -41,8 +41,15 @@ def parse_attributes_from_json(filename=""):
         "gender": lambda x: x.get("gender", None),
         "age": lambda x: x.get("age", None),
         "coat": lambda x: x.get("coat", None),
-        "status": lambda x: x.get("status", None),
+        # "status": lambda x: x.get("status", None),
         "name": lambda x: x.get("name", None),
+        "good_w_children": lambda x: x.get("environment", {}).get("children", None),
+        "good_w_dogs": lambda x: x.get("environment", {}).get("dogs", None),
+        "good_w_cats": lambda x: x.get("environment", {}).get("cats", None),
+        "house_trained": lambda x: x.get("attributes", {}).get("house_trained", None),
+        "spayed_neutered": lambda x: x.get("attributes", {}).get(
+            "spayed_neutered", None
+        ),
         # description will require a webscraping sheesh
         "description": lambda x: parse_description_from_weblink(x.get("url")),
     }
@@ -56,6 +63,15 @@ def parse_attributes_from_json(filename=""):
             result_rows.append(row)
 
     pprint(result_rows)
+    with open("mytest.csv", "w") as o:
+        writer = csv.DictWriter(
+            o, fieldnames=attributes.keys(), quoting=csv.QUOTE_MINIMAL
+        )
+        writer.writeheader()
+        writer.writerows(result_rows)
+
+    # TODO: write description {id}.txt
+    # TODO: write features to {filename}.csv
 
 
 def parse_description_from_weblink(link):
