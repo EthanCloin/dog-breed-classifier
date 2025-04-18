@@ -1,3 +1,5 @@
+"""used to process the saved results from petfinder api"""
+
 import csv
 from pathlib import Path
 import httpx

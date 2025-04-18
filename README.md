@@ -23,3 +23,11 @@ You may need to alter these steps if you are not on MacOS, check [official docs]
 ```bash
 pip install -r requirements.txt
 ```
+
+# Resources
+
+access the digital ocean droplet
+
+```bash
+ssh -i path/to/privatekey root@161.35.143.5
+```

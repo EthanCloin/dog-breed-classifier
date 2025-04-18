@@ -1,0 +1,34 @@
+from flask import Flask, request, render_template
+from werkzeug.datastructures import FileStorage
+from uuid import uuid4
+from pathlib import Path
+import logging
+
+app = Flask(__name__)
+app.config["UPLOAD_FOLDER"] = "uploads/"
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@app.get("/")
+def index():
+    return render_template("upload-pet.html")
+
+
+@app.post("/new-pet")
+def process_new_pet():
+    try:
+        image_id = uuid4()
+        upload_path = Path(app.config["UPLOAD_FOLDER"])
+        image: FileStorage = request.files.get("pet-image")
+
+        extension = image.filename.split(".")[1]
+        unique_filename = f"{image_id}.{extension}"
+        logger.info("Saving file %s to %s", unique_filename, upload_path)
+        image.save(upload_path / unique_filename)
+    except Exception as e:
+        logger.exception("problem with upload", e)
+
+
+if __name__ == "__main__":
+    app.run("0.0.0.0", 80, debug=True)

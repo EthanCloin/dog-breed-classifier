@@ -1,3 +1,5 @@
+"""used to collect pet data via PetFinder API"""
+
 import httpx
 from dotenv import load_dotenv
 import os
