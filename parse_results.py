@@ -2,18 +2,21 @@ import csv
 from pathlib import Path
 import httpx
 import json
-from pprint import pprint
 from bs4 import BeautifulSoup
+import os
+import time
 
-img_dir = Path() / "data" / "imgs"
 
-# res = httpx.get("https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/7970284/2/?bust=1291034096")
-# with httpx.stream(
-#     "GET", "https://dl5zpyw5k3jeb.cloudfront.net/photos/pets/7970284/2/?bust=1291034096"
-# ) as response:
-#     with open(img_dir / "test.jpeg", "wb") as f:
-#         for chunk in response.iter_bytes():
-#             f.write(chunk)
+def main():
+    json_files = [
+        Path() / "data" / f for f in os.listdir(Path() / "data") if f.endswith(".json")
+    ]
+    output_file = Path() / "data" / "training" / "all_dog_data.csv"
+    for file in json_files:
+        start = time.time()
+        parse_attributes_from_json(file, output_file)
+        end = time.time()
+        print(f"finished file {file.name} in {end - start:2f} seconds")
 
 
 def save_image(download_url, save_path):
@@ -31,14 +34,13 @@ def save_image(download_url, save_path):
     return "SUCCESS"
 
 
-def parse_attributes_from_json(input_filename, output_filename):
+def parse_attributes_from_json(input_path: Path, output_path: Path):
     """
     get images, descriptions (labels) and other attributes.
-    don't include extension on filenames
     """
 
-    input_path = Path() / "data" / str(input_filename + ".json")
-    output_path = Path() / "data" / str(output_filename + ".csv")
+    # input_path = Path() / "data" / str(input_filename + ".json")
+    # output_path = Path() / "data" / str(output_filename + ".csv")
     # map attribute name to function which grabs data
     attributes = {
         "id": lambda x: x.get("id"),
@@ -63,23 +65,38 @@ def parse_attributes_from_json(input_filename, output_filename):
     with open(input_path, "r") as f:
         result_batch = json.load(f)
         for animal in result_batch.get("animals", []):
-            row = {}
-            for attr, getter in attributes.items():
-                row[attr] = getter(animal)
+            try:
+                if animal is None:
+                    continue
 
-            image_url = animal.get("primary_photo_cropped", {}).get("small")
-            image_path = Path() / "data" / "imgs" / str(str(row.get("id")) + ".jpeg")
-            row["image_status"] = save_image(image_url, image_path)
+                row = {}
+                for attr, getter in attributes.items():
+                    row[attr] = getter(animal)
 
-            result_rows.append(row)
+                image_prop = (
+                    animal.get("primary_photo_cropped", {}) or {}
+                )  # null value not caught by .get
+                image_url = image_prop.get("small")
 
-    # pprint(result_rows)
-    with open(output_path, "w") as o:
-        columns = [k for k in attributes.keys()] + ["image_status"]
+                image_path = (
+                    Path() / "data" / "imgs" / str(str(row.get("id")) + ".jpeg")
+                )
+                row["image_status"] = save_image(image_url, image_path)
 
-        writer = csv.DictWriter(o, fieldnames=columns, quoting=csv.QUOTE_MINIMAL)
-        writer.writeheader()
-        writer.writerows(result_rows)
+                result_rows.append(row)
+            except Exception as e:
+                print(e)
+
+    columns = [k for k in attributes.keys()] + ["image_status"]
+    if not output_path.exists():
+        with open(output_path, "w") as o:
+            writer = csv.DictWriter(o, fieldnames=columns, quoting=csv.QUOTE_MINIMAL)
+            writer.writeheader()
+            writer.writerows(result_rows)
+    else:
+        with open(output_path, "a") as o:
+            writer = csv.DictWriter(o, fieldnames=columns, quoting=csv.QUOTE_MINIMAL)
+            writer.writerows(result_rows)
 
 
 def parse_description_from_weblink(link):
@@ -87,17 +104,16 @@ def parse_description_from_weblink(link):
         webpage = httpx.get(link)
         bs = BeautifulSoup(webpage.text, "html.parser")
         selected = bs.select("div.u-vr4x")
+        description = selected[2].text
 
-        # might need err handling here
-        description: str = selected[2].text
-        # print("got desc of length " + str(len(description)))
         return description
     except Exception as e:
         # print("scraping inconsistency {e}", e)
         return None
 
 
-parse_attributes_from_json("mytest", "01agreatfilename")
-# parse_description_from_weblink(
-#     "https://www.petfinder.com/dog/cammie-sc-20588208/fl/jacksonville/ratbone-rescues-southeast-region-fl138/?referrer_id=92d80cd8-084a-43cd-8f3d-ae87f8f918f1&utm_source=api&utm_medium=partnership&utm_content=92d80cd8-084a-43cd-8f3d-ae87f8f918f1"
-# )
+if __name__ == "__main__":
+    start = time.time()
+    main()
+    end = time.time()
+    print(f"Completed whole job in {end - start:.2f} seconds")
