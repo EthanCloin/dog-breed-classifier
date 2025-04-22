@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@app.get("/")
+@app.get("/") 
 def index():
     return render_template("upload-pet.html")
 
