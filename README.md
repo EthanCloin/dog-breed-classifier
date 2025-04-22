@@ -34,3 +34,39 @@ ssh -i path/to/privatekey root@161.35.143.5
 
 maybe alternative easier way to use a model image?
 https://www.docker.com/blog/build-machine-learning-apps-with-hugging-faces-docker-spaces/
+
+
+# File format
+
+Adoption-Blurb-Generator/
+├── README.md
+├── .gitignore
+├── docker-compose.yml
+├── .env
+│
+├── backend/
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── app/
+│   │   ├── __init__.py          # create_app factory
+│   │   ├── routes.py            # @app.route endpoints
+│   │   ├── models/
+│   │   │   └── captioner.py     # your HF/PyTorch wrapper
+│   │   ├── utils.py             # image preprocessing, helpers
+│   │   └── config.py            # load env, settings
+│   └── tests/
+│       └── test_routes.py       # pytest + Flask’s test_client
+│
+└── frontend/
+    ├── Dockerfile
+    ├── package.json
+    ├── vite.config.js
+    ├── tailwind.config.js
+    ├── public/
+    │   └── index.html
+    └── src/
+        ├── index.jsx
+        ├── App.jsx
+        └── components/
+            └── ImageForm.jsx
+
