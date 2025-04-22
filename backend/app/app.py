@@ -5,8 +5,15 @@ from pathlib import Path
 import json
 import logging
 
-app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "uploads/"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent   # up three: app.py → app → backend → project root
+# 2. An absolute path to templates/
+TEMPLATES = PROJECT_ROOT / "templates"
+# 2. An absolute path to uploads/
+UPLOAD_PATH    = PROJECT_ROOT / "uploads"
+
+
+app = Flask(__name__, template_folder=str(TEMPLATES))
+app.config["UPLOAD_FOLDER"] = str(UPLOAD_PATH)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
