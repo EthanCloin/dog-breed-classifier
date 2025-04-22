@@ -3,6 +3,7 @@
   <style>
     html {
       font-size: 62.5%;
+      font-family: "Poppins", "sans-serif";
     }
     body {
       font-size: 1.6rem; /* 16px */
@@ -44,7 +45,6 @@
     setTimeout(function () {
       let alerts = document.querySelectorAll(".flash");
       alerts.forEach(function (alert) {
-        // alert.classList.remove('show');
         alert.classList.add("hide");
       });
     }, 3000);
