@@ -31,3 +31,6 @@ access the digital ocean droplet
 ```bash
 ssh -i path/to/privatekey root@161.35.143.5
 ```
+
+maybe alternative easier way to use a model image?
+https://www.docker.com/blog/build-machine-learning-apps-with-hugging-faces-docker-spaces/

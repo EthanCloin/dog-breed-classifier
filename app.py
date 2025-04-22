@@ -1,7 +1,8 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response, jsonify
 from werkzeug.datastructures import FileStorage
 from uuid import uuid4
 from pathlib import Path
+import json
 import logging
 
 app = Flask(__name__)
@@ -26,8 +27,22 @@ def process_new_pet():
         unique_filename = f"{image_id}.{extension}"
         logger.info("Saving file %s to %s", unique_filename, upload_path)
         image.save(upload_path / unique_filename)
+
+        # TODO: tell the model to process the new image
+        # TODO: return the updated webpage to await result.
+        return Response(
+            json.dumps({"status": "success", "data": {"id": str(image_id)}}),
+            status=202,
+            content_type="application/json",
+        )
     except Exception as e:
         logger.exception("problem with upload", e)
+        return Response(
+            json.dumps(
+                {"status": "error", "message": "unable to process image upload"}
+            ),
+            status=500,
+        )
 
 
 if __name__ == "__main__":
