@@ -7,9 +7,9 @@ import logging
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent   # up three: app.py → app → backend → project root
 # 2. An absolute path to templates/
-TEMPLATES = PROJECT_ROOT / "templates"
+TEMPLATES = PROJECT_ROOT / "frontend/templates"
 # 2. An absolute path to uploads/
-UPLOAD_PATH    = PROJECT_ROOT / "uploads"
+UPLOAD_PATH    = PROJECT_ROOT / "frontend/uploads"
 
 
 app = Flask(__name__, template_folder=str(TEMPLATES))
