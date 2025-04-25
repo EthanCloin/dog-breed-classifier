@@ -28,6 +28,8 @@ def process_new_pet():
         age = request.form.get("pet-age")
         gender = request.form.get("pet-gender")
 
+        # return render_template("loading.html")
+
         image_id = store_image(image, upload_path)
         predicted_breed, confidence = get_custom_model_response(image_id)
         blurb = get_gpt_response(name, age, gender, predicted_breed)
@@ -78,6 +80,7 @@ def get_custom_model_response(image_id):
 
 
 def get_gpt_response(name, age, gender, breed):
+    return "fake gpt"
     gpt_prompt = """
 You will receive a JSON-formatted string with attributes of a dog. This dog is being listed for adoption by a shelter.
 Write 5 sentences which reference the provided attributes, particularly the dog's name, age, gender, and breed.
