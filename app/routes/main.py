@@ -1,32 +1,27 @@
-from flask import Flask, request, render_template, Response
+from flask import Blueprint, request, render_template, Response, current_app
 from uuid import uuid4
 from pathlib import Path
 import json
 import logging
 from openai import OpenAI
-from dotenv import load_dotenv
-import os
+from app.models import breed_classifier
 
-load_dotenv()
-OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 chatgpt = OpenAI()
-
-
-app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = Path() / "static" / "uploads"
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+bp = Blueprint("main", __name__)
 
-@app.get("/")
+
+@bp.get("/")
 def index():
     return render_template("upload-pet.html")
 
 
-@app.post("/new-pet")
+@bp.post("/new-pet")
 def process_new_pet():
     try:
-        upload_path = Path(app.config["UPLOAD_FOLDER"])
+        upload_path = Path(current_app.config["UPLOAD_PATH"])
 
         image = request.files.get("pet-image")
         name = request.form.get("pet-name")
@@ -34,12 +29,17 @@ def process_new_pet():
         gender = request.form.get("pet-gender")
 
         image_id = store_image(image, upload_path)
-        predicted_breed = get_custom_model_response(image_id)
+        predicted_breed, confidence = get_custom_model_response(image_id)
         blurb = get_gpt_response(name, age, gender, predicted_breed)
 
         # TODO: tell the model to process the new image
         # TODO: return the updated webpage to await result.
-        return render_template("pet-result.html", id=image_id, blurb=blurb)
+        return render_template(
+            "pet-result.html",
+            id=image_id,
+            caption=f"Our model predicts that {name} is a {predicted_breed} with {confidence:.2f}% confidence",
+            blurb=blurb,
+        )
         # return Response(
         #     json.dumps({"status": "success", "data": {"id": str(image_id)}}),
         #     status=202,
@@ -55,7 +55,7 @@ def process_new_pet():
         )
 
 
-@app.get("/view-result")
+@bp.get("/view-result")
 def display_pet_result():
     return render_template("pet-result.html")
 
@@ -71,11 +71,10 @@ def store_image(image, upload_path):
 
 
 def get_custom_model_response(image_id):
-    # TODO: send a request to the ml model service to read the
-    #  image from the static folder and get a response back.
-    #  the response we expect is a breed prediction.
-    breed = "Samoyed"
-    return breed
+    response = breed_classifier.predict_breed(image_id)
+    breed, confidence = response.get("breed", "???"), response.get("confidence", 0.00)
+
+    return breed, confidence
 
 
 def get_gpt_response(name, age, gender, breed):
@@ -94,7 +93,3 @@ The sentences should describe the dog and end by encouraging the reader to consi
     )
 
     return response.output_text
-
-
-if __name__ == "__main__":
-    app.run("0.0.0.0", 80, debug=True)

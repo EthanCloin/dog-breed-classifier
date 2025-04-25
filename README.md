@@ -1,36 +1,30 @@
-# Dev Setup
+# Run Locally
 
-1. setup .env with auth values
+1. Create and activate the venv for your Python interpreter. Python 3.10 is required for tensorflow compatibility
 
-```bash
-cp .env.template .env
-```
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate
+   ```
 
-Update the placeholder values with the API_KEY and SECRET you received via DMs.
-Do not at any time commit those values to git!
-
-1. create and activate the venv for your Python interpreter
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
-You may need to alter these steps if you are not on MacOS, check [official docs](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
+   You may need to provide a different path to `source` if you are not on MacOS, check [official docs](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) for detailed instructions
 
 1. install dependencies from the requirements file
 
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Resources
+1. setup .env with auth values (do not commit to git)
 
-access the digital ocean droplet
+   ```bash
+   cp .env.template .env
+   ```
 
-```bash
-ssh -i path/to/privatekey root@161.35.143.5
-```
+1. run the flask app
 
-maybe alternative easier way to use a model image?
-https://www.docker.com/blog/build-machine-learning-apps-with-hugging-faces-docker-spaces/
+   ```bash
+   python run.py
+   ```
+
+NOTE: scraper functionality might be broken after the pathing changes. debugging required.
