@@ -7,7 +7,7 @@ from openai import OpenAI
 from app.models import breed_classifier
 from app.database import get_db
 
-chatgpt = OpenAI()
+# chatgpt = OpenAI()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
