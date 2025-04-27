@@ -1,10 +1,11 @@
-from flask import Blueprint, request, render_template, Response, current_app
+from flask import Blueprint, request, render_template, Response, current_app, g
 from uuid import uuid4
 from pathlib import Path
 import json
 import logging
 from openai import OpenAI
 from app.models import breed_classifier
+from app.database import get_db
 
 chatgpt = OpenAI()
 logging.basicConfig(level=logging.INFO)
@@ -31,8 +32,10 @@ def process_new_pet():
         # return render_template("loading.html")
 
         image_id = store_image(image, upload_path)
+
         predicted_breed, confidence = get_custom_model_response(image_id)
         blurb = get_gpt_response(name, age, gender, predicted_breed)
+        store_result(image_id, name, age, gender, predicted_breed, confidence)
 
         # TODO: tell the model to process the new image
         # TODO: return the updated webpage to await result.
@@ -42,11 +45,6 @@ def process_new_pet():
             caption=f"Our model predicts that {name} is a {predicted_breed} with {confidence:.2f}% confidence",
             blurb=blurb,
         )
-        # return Response(
-        #     json.dumps({"status": "success", "data": {"id": str(image_id)}}),
-        #     status=202,
-        #     content_type="application/json",
-        # )
     except Exception as e:
         logger.exception("problem with upload", e)
         return Response(
@@ -62,14 +60,36 @@ def display_pet_result():
     return render_template("pet-result.html")
 
 
+@bp.put("/feedback")
+def accept_feedback():
+    try:
+        id = request.form.get("upload-id")
+        is_correct = not request.form.get("is-wrong", False)
+        actual_breed = request.form.get("actual-breed", "N/A")
+        store_feedback(id, is_correct, actual_breed)
+        return "Feedback accepted, thank you!"
+    except Exception as e:
+        logger.exception("Error saving feedback", e)
+        return "Error accepting feedback!"
+
+
+@bp.get("/breeds-list")
+def get_breeds_selection():
+    CLASS_NAME_JSON = current_app.config["MODEL_PATH"] / "class_names.json"
+    with open(CLASS_NAME_JSON, "r") as f:
+        breeds_obj = json.load(f)
+        breeds_list = [v for k, v in breeds_obj.items()]
+    return render_template("breed-select.html", breeds=breeds_list)
+
+
 def store_image(image, upload_path):
-    image_id = uuid4()
+    image_id = str(uuid4())
     extension = image.filename.split(".")[1]
     unique_filename = f"{image_id}.{extension}"
     logger.info("Saving file %s to %s", unique_filename, upload_path)
     image.save(upload_path / unique_filename)
 
-    return str(image_id)
+    return image_id
 
 
 def get_custom_model_response(image_id):
@@ -98,8 +118,43 @@ The sentences should describe the dog and end by encouraging the reader to consi
     return response.output_text
 
 
-# def save_result(id, name, age, gender, predicted_breed, confidence, is_correct, actual_breed="N/A"):
-#     result_file = current_app.config.get("RESULT_JSON")
-#     with open(result_file, "r") as f:
-#         json_results = json.load(f)
-#         json_results[id] = {}
+def store_result(
+    id, name, age, gender, predicted_breed, confidence, is_correct=3, actual_breed="N/A"
+):
+    insert_result = """
+INSERT INTO Feedback (
+    UploadID,
+    Name,
+    Age,
+    Gender,
+    PredictedBreed,
+    Confidence,
+    IsCorrect,
+    ActualBreed)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+"""
+
+    db = get_db()
+    logger.info("Writing upload %s to Feedback table", id)
+    db.execute(
+        insert_result,
+        (id, name, age, gender, predicted_breed, confidence, is_correct, actual_breed),
+    )
+    db.commit()
+
+
+def store_feedback(id, is_correct, actual_breed):
+    update_feedback = """
+UPDATE Feedback
+SET 
+    IsCorrect = ?,
+    ActualBreed = ?
+WHERE UploadID = ?;
+    """
+    db = get_db()
+    logger.info("Writing upload %s to Feedback table", id)
+    db.execute(
+        update_feedback,
+        (is_correct, actual_breed, id),
+    )
+    db.commit()
