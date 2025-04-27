@@ -1,0 +1,9 @@
+<div class="form-row">
+  <label for="actual-breed">What was the correct breed?</label>
+  <input id="actual-breed" name="actual-breed" type="text" list="breeds" />
+  <datalist id="breeds">
+    {% for breed in breeds %}
+    <option>{{ breed }}</option>
+    {% endfor %}
+  </datalist>
+</div>
