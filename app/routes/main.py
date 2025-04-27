@@ -6,10 +6,13 @@ import logging
 from openai import OpenAI
 from app.models import breed_classifier
 from app.database import get_db
+from ultralytics import YOLO
 
 chatgpt = OpenAI()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+yolo = YOLO("yolo11n.pt")
 
 bp = Blueprint("main", __name__)
 
@@ -32,10 +35,16 @@ def process_new_pet():
         # return render_template("loading.html")
 
         image_id = store_image(image, upload_path)
-
+        image_path = upload_path / f"{image_id}.{image.filename.split('.')[-1]}"
         predicted_breed, confidence = get_custom_model_response(image_id)
         blurb = get_gpt_response(name, age, gender, predicted_breed)
         store_result(image_id, name, age, gender, predicted_breed, confidence)
+
+        if not detect_dog(image_path):
+            return Response(
+                json.dumps({"status": "error", "message": "No dog detected"}),
+                status=400,
+            )
 
         # TODO: tell the model to process the new image
         # TODO: return the updated webpage to await result.
@@ -90,6 +99,23 @@ def store_image(image, upload_path):
     image.save(upload_path / unique_filename)
 
     return image_id
+
+
+def detect_dog(image):
+    try:
+        results = yolo(image)
+
+        for result in results:
+            for box in result.boxes:
+                if box.cls == 16:
+                    score = box.conf
+                    if score > 0.5:
+                        return True
+
+        return False
+    except Exception as e:
+        logger.exception("Error during dog detection", e)
+        return False
 
 
 def get_custom_model_response(image_id):
