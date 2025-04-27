@@ -96,3 +96,10 @@ The sentences should describe the dog and end by encouraging the reader to consi
     )
 
     return response.output_text
+
+
+# def save_result(id, name, age, gender, predicted_breed, confidence, is_correct, actual_breed="N/A"):
+#     result_file = current_app.config.get("RESULT_JSON")
+#     with open(result_file, "r") as f:
+#         json_results = json.load(f)
+#         json_results[id] = {}
