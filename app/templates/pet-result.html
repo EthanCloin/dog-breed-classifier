@@ -1,10 +1,25 @@
-{% extends 'layout.html' %} {% block content %}
-<div>
+<div class="result-wrapper">
   <div class="captioned-image">
     <img src="{{ url_for('static', filename='uploads/' + id + '.jpeg') }}" />
     <p>{{caption}}</p>
   </div>
   <p>{{blurb}}</p>
 </div>
-
-{% endblock %}
+<div class="form-wrapper">
+  <p>How did we do?</p>
+  <form class="feedback-form" hx-put="/feedback" enctype="multipart/form-data">
+    <div
+      class="form-row"
+      hx-get="/breeds-list"
+      hx-target="next button"
+      hx-swap="beforebegin"
+      hx-trigger="click once"
+    >
+      <input name="upload-id" value="{{id}}" hidden />
+      <label for="is-wrong">Was the prediction wrong?</label>
+      <input id="is-wrong" name="is-wrong" type="checkbox" />
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+<a href="/">Try Our Detector Again!</a>

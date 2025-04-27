@@ -6,6 +6,9 @@ def create_app():
     app.config.from_object("app.config.Config")
 
     from app.routes import main
+    from app import database
 
     app.register_blueprint(main.bp)
+    with app.app_context():
+        database.init_app(app)
     return app
