@@ -4,6 +4,12 @@ html {
 }
 body {
   font-size: 1.6rem; /* 16px */
+  background-image: url("pawprintpattern.jpg");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: rgba(255, 255, 255, 0.4);
+  background-blend-mode: lighten;
 }
 
 main {
@@ -23,6 +29,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: whitesmoke;
 }
 .captioned-image {
   display: flex;
@@ -41,6 +48,7 @@ main {
   margin: 1.5em;
   padding: 1em;
   border: gray solid 1px;
+  background-color: whitesmoke;
 }
 .form-row {
   display: flex;
