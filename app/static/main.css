@@ -77,12 +77,19 @@ main {
   font-size: 1.4rem;
 }
 
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Update the loading indicator styling */
 .htmx-indicator {
   text-align: center;
   padding: 1rem;
   margin-top: 1rem;
   border-radius: 4px;
+  width: fit-content;
 }
 
 .feedback-form {
