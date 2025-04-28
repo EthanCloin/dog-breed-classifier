@@ -11,28 +11,18 @@
   >
     <div class="form-row">
       <label for="pet-name">What's your pet's name?</label>
-      <input id="pet-name" name="pet-name" type="text" required />
+      <input required id="pet-name" name="pet-name" type="text" />
     </div>
 
-    <!-- <div class="form-row">
-      <label for="pet-image">Let's see a picture!</label>
-      <input
-        id="pet-image"
-        name="pet-image"
-        type="file"
-        accept="image/jpeg"
-        required
-      />
-    </div> -->
     <div class="form-row">
       <label for="pet-image">Let's see a picture!</label>
       <div class="file-input-wrapper">
         <input
+          required
           id="pet-image"
           name="pet-image"
           type="file"
           accept="image/jpeg"
-          required
         />
       </div>
     </div>
@@ -42,12 +32,12 @@
 
     <div class="form-row">
       <label for="pet-age">How old are they?</label>
-      <input id="pet-age" name="pet-age" type="number" min="0" required />
+      <input required id="pet-age" name="pet-age" type="number" min="0" />
     </div>
 
     <div class="form-row">
       <label for="pet-gender">What about gender?</label>
-      <select id="pet-gender" name="pet-gender" required>
+      <select required id="pet-gender" name="pet-gender">
         <option>Male</option>
         <option>Female</option>
       </select>
@@ -55,8 +45,14 @@
 
     <button type="submit">Submit</button>
   </form>
-  <div id="loading" class="htmx-indicator">
-    <img src="{{url_for('static', filename='grid.svg')}}" />
+  <div class="loading-wrapper">
+    <div
+      id="loading"
+      class="htmx-indicator"
+      style="display: block; background-color: #6a43a9"
+    >
+      <img src="{{url_for('static', filename='grid.svg')}}" />
+    </div>
   </div>
 </div>
 {% endblock %}
