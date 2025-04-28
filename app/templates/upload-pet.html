@@ -14,7 +14,7 @@
       <input id="pet-name" name="pet-name" type="text" required />
     </div>
 
-    <div class="form-row">
+    <!-- <div class="form-row">
       <label for="pet-image">Let's see a picture!</label>
       <input
         id="pet-image"
@@ -23,6 +23,18 @@
         accept="image/jpeg"
         required
       />
+    </div> -->
+    <div class="form-row">
+      <label for="pet-image">Let's see a picture!</label>
+      <div class="file-input-wrapper">
+        <input
+          id="pet-image"
+          name="pet-image"
+          type="file"
+          accept="image/jpeg"
+          required
+        />
+      </div>
     </div>
 
     <br />
@@ -52,3 +64,5 @@
   </div>
 </div>
 {% endblock %}
+
+
