@@ -7,6 +7,7 @@ from openai import OpenAI
 from app.models import breed_classifier
 from app.database import get_db
 from ultralytics import YOLO
+from app.models import dog_detection
 
 chatgpt = OpenAI()
 logging.basicConfig(level=logging.INFO)
@@ -36,15 +37,39 @@ def process_new_pet():
 
         image_id = store_image(image, upload_path)
         image_path = upload_path / f"{image_id}.{image.filename.split('.')[-1]}"
+
+        dog_detected = dog_detection.detect_dog(yolo, image_path)
+
+        if not dog_detected["detected"]:
+            return Response(
+                json.dumps(
+                    {
+                      "status": "success",
+                      "detected": False,
+                      "confidence": float(dog_detected["confidence"]),
+                      "message": "No dog detected"
+                    }
+                ),
+                status=200,
+                mimetype="application/json"
+            )
+
+        return Response(
+            json.dumps(
+                {
+                    "status": "success",
+                    "detected": True,
+                    "confidence": float(dog_detected["confidence"]),
+                    "message": "Dog detected"
+                }
+            ),
+            status=200,
+            mimetype="application/json"
+        )
+
         predicted_breed, confidence = get_custom_model_response(image_id)
         blurb = get_gpt_response(name, age, gender, predicted_breed)
         store_result(image_id, name, age, gender, predicted_breed, confidence)
-
-        if not detect_dog(image_path):
-            return Response(
-                json.dumps({"status": "error", "message": "No dog detected"}),
-                status=400,
-            )
 
         # TODO: tell the model to process the new image
         # TODO: return the updated webpage to await result.
@@ -99,23 +124,6 @@ def store_image(image, upload_path):
     image.save(upload_path / unique_filename)
 
     return image_id
-
-
-def detect_dog(image):
-    try:
-        results = yolo(image)
-
-        for result in results:
-            for box in result.boxes:
-                if box.cls == 16:
-                    score = box.conf
-                    if score > 0.5:
-                        return True
-
-        return False
-    except Exception as e:
-        logger.exception("Error during dog detection", e)
-        return False
 
 
 def get_custom_model_response(image_id):

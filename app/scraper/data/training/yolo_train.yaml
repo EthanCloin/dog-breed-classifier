@@ -1,0 +1,6 @@
+train: ../../../../../../adoption-blurb-generator/app/scraper/data/imgs
+val: ../../../../../../adoption-blurb-generator/app/scraper/data/imgs
+
+nc: 1
+names:
+  - dog
