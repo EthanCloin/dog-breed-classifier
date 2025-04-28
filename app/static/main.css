@@ -47,6 +47,9 @@ main {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
   text-align: center;
+  p {
+    font-size: 1.8rem;
+  }
 }
 
 .captioned-image {
@@ -55,10 +58,6 @@ main {
     height: auto;
     border-radius: 8px;
     margin-bottom: 1rem;
-  }
-
-  p {
-    font-size: 1.8rem;
   }
 }
 
