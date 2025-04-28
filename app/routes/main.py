@@ -16,6 +16,11 @@ bp = Blueprint("main", __name__)
 
 @bp.get("/")
 def index():
+    return render_template("landing.html")
+
+
+@bp.get("/upload")
+def upload_form():
     return render_template("upload-pet.html")
 
 
