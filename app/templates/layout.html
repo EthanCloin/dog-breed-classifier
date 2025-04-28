@@ -18,6 +18,17 @@
     <title>Breed Predictor</title>
     <script src="/static/htmx.2.0.4.min.js"></script>
   </head>
+  <header class="navbar">
+    <nav class="navigation">
+      <a class="nav-util" href="/">Home</a>
+      <!-- <a class="nav-util" href="#">About</a> -->
+      <a
+        class="nav-util"
+        href="{{ url_for('static', filename='ResearchPaper.pdf')}}"
+        >Download the Writeup</a
+      >
+    </nav>
+  </header>
   <body>
     <main>{% block content %} {% endblock %}</main>
   </body>
