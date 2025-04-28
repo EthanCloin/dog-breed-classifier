@@ -3,7 +3,7 @@
     <img src="{{ url_for('static', filename='uploads/' + id + '.jpeg') }}" />
     <p>{{caption}}</p>
   </div>
-  <p>{{blurb}}</p>
+  <!-- <p>{{blurb}}</p> -->
 </div>
 <div class="form-wrapper">
   <form class="feedback-form" hx-put="/feedback" enctype="multipart/form-data">
@@ -22,4 +22,6 @@
     <button type="submit">Submit</button>
   </form>
 </div>
-<a href="/">Try Our Detector Again!</a>
+<div class="goback">
+  <a href="/">Try Our Detector Again!</a>
+</div>

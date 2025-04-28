@@ -1,0 +1,22 @@
+{% extends 'layout.html' %} {% block content %}
+<section class="hero">
+  <div class="hero-backdrop">
+    <img
+      class="hero-backdrop"
+      src="{{ url_for('static', filename='hero-dog.jpg') }}"
+    />
+  </div>
+  <div class="headline">
+    <h1 class="headline__text">
+      Discover your dog's <span class="underline">true breed</span>
+    </h1>
+    <p class="headline__subtext">
+      Upload a photo and let machine learning identify your dog in seconds!
+    </p>
+    <a class="call-to-action" href="/upload">
+      <button>Get Started</button>
+    </a>
+  </div>
+</section>
+
+{% endblock %}

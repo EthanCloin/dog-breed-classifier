@@ -4,6 +4,9 @@
   box-sizing: border-box;
 }
 
+:root {
+  --secondary-color: #6a43a9;
+}
 
 html {
   font-size: 62.5%;
@@ -15,9 +18,8 @@ body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.9);
   background-blend-mode: lighten;
-  font-family: "Poppins", sans-serif;
   padding: 2rem;
 }
 
@@ -28,20 +30,14 @@ main {
   min-height: 100vh;
 }
 
-/* .form-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-} */
-
 .form-wrapper {
-  max-width: 600px;
+  max-width: 70vw;
   margin: 2rem auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   padding: 2rem;
   background-color: white;
-  width: 100%; 
+  width: 100%;
 }
 
 .result-wrapper {
@@ -52,49 +48,35 @@ main {
   margin-bottom: 2rem;
   text-align: center;
 }
-/* .captioned-image {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-} */
 
+.captioned-image {
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
 
-.captioned-image img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  p {
+    font-size: 1.8rem;
+  }
 }
-
-/* .pet-form,
-.feedback-form {
-  display: flex;
-  flex-direction: column;
-  width: 70vw;
-  height: fit-content;
-  justify-content: space-around;
-  align-items: left;
-  margin: 1.5em;
-  padding: 1em;
-  border: gray solid 1px;
-  background-color: whitesmoke;
-} */
 
 /* Update the pet-form class to remove the fixed width */
 .pet-form,
 .feedback-form {
   display: flex;
   flex-direction: column;
-  width: 100%; 
+  width: 100%;
   height: fit-content;
   justify-content: space-around;
   align-items: left;
-  margin: 0; 
+  margin: 0;
   padding: 1em;
-  border: none; 
-  background-color: transparent; 
+  border: none;
+  background-color: transparent;
+  font-size: 1.4rem;
 }
-
 
 /* Update the loading indicator styling */
 .htmx-indicator {
@@ -105,7 +87,7 @@ main {
 }
 
 .feedback-form {
-  overflow-x: auto;       
+  overflow-x: auto;
 }
 
 .feedback-form h2 {
@@ -113,18 +95,10 @@ main {
   margin-bottom: 1.5rem;
 }
 .form-row {
-  /* display: flex;
-  align-items: center;
-  margin-bottom: 1em;
-  font-size: 1.8rem;
-
-  label {
-    margin-right: 1.2em;
-  } */
   display: flex;
-  align-items: center;    
-  flex-wrap: wrap;        
-  gap: 0.5rem;           
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   width: 100%;
 }
 
@@ -133,7 +107,6 @@ h1.title {
   text-align: center;
   margin-bottom: 1.5rem;
 }
-
 
 button[type="submit"] {
   background-color: #6a43a9;
@@ -151,7 +124,7 @@ button[type="submit"]:hover {
   background-color: #553788;
 }
 
-input[type="text"], 
+input[type="text"],
 input[type="number"],
 input[type="file"],
 select {
@@ -190,10 +163,85 @@ a:hover {
   width: 100%;
 }
 
-.file-input-wrapper input[type=file] {
+.file-input-wrapper input[type="file"] {
   display: block;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #f9f9f9;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 1.8rem;
+}
+
+.nav-util {
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 20px;
+  transition: color 0.3s ease;
+}
+
+.hero {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  /* margin-top: 10vh; */
+}
+.headline {
+  flex: 4;
+  width: 60vw;
+  text-align: center;
+}
+.headline__text {
+  font-size: 4.8rem;
+  font-weight: 400;
+  margin-top: 0;
+}
+.headline__subtext {
+  margin: 0;
+  font-size: 2rem;
+}
+.underline {
+  text-decoration: underline var(--secondary-color);
+}
+.hero-backdrop {
+  flex: 6;
+  width: 100%;
+  overflow: hidden;
+  height: 40vh;
+  img {
+    height: auto;
+    display: block;
+    object-fit: center center;
+  }
+}
+
+.call-to-action button {
+  padding: 0.4rem 1.2rem;
+  margin-top: 2rem;
+  border-radius: 10rem;
+  background: #fff;
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--secondary-color);
+  transition: 0.3s ease;
+  border: 1.5px solid var(--secondary-color);
+  cursor: pointer;
+}
+.call-to-action button:hover {
+  color: #fff;
+  background-color: color-mix(in srgb, var(--secondary-color) 80%, #fff);
+}
+
+.goback {
+  font-size: 1.8rem;
+  text-align: center;
+  width: 100%;
 }
