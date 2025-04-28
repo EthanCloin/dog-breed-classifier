@@ -22,6 +22,7 @@ bp = Blueprint("main", __name__)
 def index():
     return render_template("landing.html")
 
+
 @bp.get("/upload")
 def upload_form():
     return render_template("upload-pet.html")
@@ -37,50 +38,25 @@ def process_new_pet():
         age = request.form.get("pet-age")
         gender = request.form.get("pet-gender")
 
-        # return render_template("loading.html")
-
         image_id = store_image(image, upload_path)
         image_path = upload_path / f"{image_id}.{image.filename.split('.')[-1]}"
 
-        dog_detected = dog_detection.detect_dog(yolo, image_path)
-
-        if not dog_detected["detected"]:
-            return Response(
-                json.dumps(
-                    {
-                      "status": "success",
-                      "detected": False,
-                      "confidence": float(dog_detected["confidence"]),
-                      "message": "No dog detected"
-                    }
-                ),
-                status=200,
-                mimetype="application/json"
-            )
-
-        return Response(
-            json.dumps(
-                {
-                    "status": "success",
-                    "detected": True,
-                    "confidence": float(dog_detected["confidence"]),
-                    "message": "Dog detected"
-                }
-            ),
-            status=200,
-            mimetype="application/json"
-        )
+        detect_dog = dog_detection.detect_dog(yolo, image_path)
+        dog_confidence = detect_dog["confidence"]
+        if not detect_dog["detected"]:
+            caption = f"Upon examination, we are only {dog_confidence:.2f}% certain that this is indeed a dog. But! "
+        else:
+            caption = f"We believe with {dog_confidence:.2f}% certainty that this is indeed a dog. "
 
         predicted_breed, confidence = get_custom_model_response(image_id)
+        caption += f"Our breed classification model predicts that {name} is a {predicted_breed} with {confidence:.2f}% confidence"
         blurb = get_gpt_response(name, age, gender, predicted_breed)
         store_result(image_id, name, age, gender, predicted_breed, confidence)
 
-        # TODO: tell the model to process the new image
-        # TODO: return the updated webpage to await result.
         return render_template(
             "pet-result.html",
             id=image_id,
-            caption=f"Our model predicts that {name} is a {predicted_breed} with {confidence:.2f}% confidence",
+            caption=caption,
             blurb=blurb,
         )
     except Exception as e:
