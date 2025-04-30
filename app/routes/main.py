@@ -106,7 +106,7 @@ def get_custom_model_response(image_id):
 
 
 def get_gpt_response(name, age, gender, breed):
-    return "fake gpt"
+    return ""
     gpt_prompt = """
 You will receive a JSON-formatted string with attributes of a dog. This dog is being listed for adoption by a shelter.
 Write 5 sentences which reference the provided attributes, particularly the dog's name, age, gender, and breed.
