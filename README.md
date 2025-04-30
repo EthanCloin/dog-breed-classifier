@@ -3,7 +3,7 @@
 1. Create and activate the venv for your Python interpreter. Python 3.10 is required for tensorflow compatibility
 
    ```bash
-   python -m venv .venv
+   python3.10 -m venv .venv
    source .venv/bin/activate
    ```
 
@@ -15,16 +15,8 @@
    pip install -r requirements.txt
    ```
 
-1. setup .env with auth values (do not commit to git)
-
-   ```bash
-   cp .env.template .env
-   ```
-
 1. run the flask app
 
    ```bash
    python run.py
    ```
-
-NOTE: scraper functionality might be broken after the pathing changes. debugging required.

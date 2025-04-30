@@ -6,15 +6,12 @@ import logging
 from openai import OpenAI
 from app.models import breed_classifier
 from app.database import get_db
+from app.models import detection
 
-# from ultralytics import YOLO
-from app.models import dog_detection, detection
-
-chatgpt = OpenAI()
+# chatgpt = OpenAI()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# yolo = YOLO("yolo11n.pt")
 
 bp = Blueprint("main", __name__)
 
@@ -40,13 +37,6 @@ def process_new_pet():
         gender = request.form.get("pet-gender")
 
         image_id = store_image(image, upload_path)
-        # image_path = upload_path / f"{image_id}.{image.filename.split('.')[-1]}"
-
-        # detect_dog = dog_detection.detect_dog(yolo, image_path)
-        # dog_confidence = detect_dog["confidence"]
-        # if not detect_dog["detected"]:
-        # caption = f"Upon examination, we are only {dog_confidence:.2f}% certain that this is indeed a dog. But! "
-        # else:
         dog_confidence = detection.detect_dog(image_id)
         caption = f"We believe with {dog_confidence*100:.2f}% certainty that this is indeed a dog.\n"
 
@@ -116,7 +106,7 @@ def get_custom_model_response(image_id):
 
 
 def get_gpt_response(name, age, gender, breed):
-    # return "fake gpt"
+    return "fake gpt"
     gpt_prompt = """
 You will receive a JSON-formatted string with attributes of a dog. This dog is being listed for adoption by a shelter.
 Write 5 sentences which reference the provided attributes, particularly the dog's name, age, gender, and breed.
