@@ -49,8 +49,11 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          echo "Installing Python dependencies..."
+          echo "Creating venv folder..."
           cd /home/deploy/dog-breed-classifier
+          python3.10 -m venv .venv
+          
+          echo "Installing Python dependencies..."
           source .venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
