@@ -34,12 +34,13 @@ jobs:
         SOURCE: "."
         TARGET: /home/deploy/dog-breed-classifier
         ARGS: >
-          -avzr --delete
+          -avzr
           --exclude='.git*'
           --exclude='__pycache__/'
           --exclude='*.pyc'
-          --exclude='.env'
+          --exclude='.venv/'
           --exclude='*.md'
+          --delete
 
     
     - name: Install Python dependencies
