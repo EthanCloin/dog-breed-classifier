@@ -66,5 +66,10 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          echo "Restarting Gunicorn..."
-          sudo systemctl restart gunicorn
+          echo "Killing Old Gunicorn..."
+          pkill -f gunicorn
+
+          echo "Starting New Gunicorn..."
+          cd /home/deploy/dog-breed-classifier
+          source .venv/bin/activate
+          .venv/bin/gunicorn --config=gunicorn_config.py "app:create_app()"
