@@ -68,7 +68,8 @@ jobs:
         script: |
           echo "Killing Old Gunicorn..."
           pkill -f gunicorn || true  # need to OR true since pkill returns nonzero on successful murder
-
+          # currently still fails doing pkill. it works fine when actually logged in as deploy user so unclear why. 
+          # chatgpt thinks is still the same issue that was attempted to be addressed with || true
           echo "Starting New Gunicorn..."
           cd /home/deploy/dog-breed-classifier
           # nohup lets it work after session ends, 2>&1 redirects stderr to stdout
