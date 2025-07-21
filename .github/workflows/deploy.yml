@@ -72,4 +72,5 @@ jobs:
           echo "Starting New Gunicorn..."
           cd /home/deploy/dog-breed-classifier
           source .venv/bin/activate
-          .venv/bin/gunicorn --config=gunicorn_config.py "app:create_app()"
+          nohup .venv/bin/gunicorn --config=gunicorn_config.py "app:create_app()" > gunicorn.log 2>&1 &
+
