@@ -1,3 +1,5 @@
+https://breed-detector.ethancloin.xyz
+
 # Submitted Pages
 <img width="1440" alt="Screenshot 2025-06-17 at 5 22 06 PM" src="https://github.com/user-attachments/assets/f504850d-fb87-4b2c-9acd-659b14bdac57" />
 <img width="1440" alt="Screenshot 2025-06-24 at 3 13 13 PM" src="https://github.com/user-attachments/assets/99a71f90-1db0-479a-a626-19e841be8f7c" />
